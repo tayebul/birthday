@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Birthday Surprise</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@800;900&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  background: black;
+  font-family: 'Montserrat Alternates', sans-serif;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.intro {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.main-text span {
+  font-size: clamp(56px, 9vw, 72px);
+  font-weight: 900;
+  margin: 0 12px;
+  line-height: 1.1;
+  /* Homepage gradient changed to glowing purple-pink-blue */
+  background: linear-gradient(90deg, #ff4ecf, #ff95c7, #6e5fff, #4ec9ff, #ff4ecf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0;
+  display: inline-block;
+  animation: popIn 4s forwards, shake 6s infinite alternate;
+}
+
+.play-gif-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.play-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: none;
+  background: #ff2e63;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.play-gif-container img {
+  width: 100px;
+  height: auto;
+}
+
+video {
+  width: 100vw;
+  max-height: 80vh;
+  display: none;
+  background: black;
+  position: relative;
+}
+
+/* Text over video */
+#birthdayTextTop, #birthdayTextBottom {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  z-index: 15;
+  white-space: nowrap;
+}
+
+.line {
+  display: block;
+  font-size: clamp(48px, 8vw, 64px);
+  font-weight: 900;
+  margin: 0;
+}
+
+.letter {
+  display: inline-block;
+  margin: 0 12px;
+  opacity: 0;
+  animation: popIn 4s forwards, colorShift 6s infinite linear, shake 6s infinite alternate;
+  /* Video text gradient improved pink glow */
+  background: linear-gradient(90deg, #ff69b4, #ff1493, #ff85c1, #ff69b4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.letter.emoji {
+  background: none;
+  -webkit-text-fill-color: unset;
+}
+
+@keyframes popIn {
+  0% { opacity: 0; transform: translateY(-40px) scale(0.5); }
+  50% { opacity: 1; transform: translateY(10px) scale(1.2); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes colorShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Slow shake animation for all texts */
+@keyframes shake {
+  0% { transform: translate(0,0); }
+  25% { transform: translate(1px,-1px); }
+  50% { transform: translate(-1px,1px); }
+  75% { transform: translate(1px,1px); }
+  100% { transform: translate(0,0); }
+}
+
+/* MOBILE ADJUSTMENTS */
+@media only screen and (max-width: 600px) {
+  .main-text span {
+    font-size: clamp(36px, 10vw, 48px);
+    margin: 0 6px;
+  }
+  .play-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 22px;
+  }
+  .play-gif-container img {
+    width: 70px;
+  }
+  #birthdayTextTop, #birthdayTextBottom {
+    font-size: clamp(28px, 8vw, 36px);
+  }
+  .letter {
+    margin: 0 4px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="intro" id="intro">
+  <div class="main-text" id="happy"></div>
+  <div class="main-text" id="birthday"></div>
+  
+  <div class="play-gif-container">
+    <img id="leftGif" src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdmNyYm9nNjFsZjZzZWRmbGF2bHJ5d3ZwZXhybmhiZHI2eTF3amp2aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/W5xR7Q878bdAq89YtV/giphy.gif" alt="Left GIF">
+    <button id="playBtn" class="play-btn">▶</button>
+    <img id="sideGif" src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MzM4aXBxcWV5OHRxMXFha3RoaWJmNG5ncTRjZWJ6dG9jbXlwZzMwNSZlcD12MV9zdGlja2Vyc19yZWxhdGVkJmN0PXM/3SKMRnlFdY67Uuk5G0/giphy.gif" alt="Right GIF">
+  </div>
+</div>
+
+<video id="videoPlayer" playsinline controls>
+  <source src="bdayy.mp4" type="video/mp4">
+</video>
+
+<div id="birthdayTextTop"></div>
+<div id="birthdayTextBottom"></div>
+
+<script>
+const happyText = "HAPPY";
+const birthdayTextIntro = "BIRTHDAY";
+const intro = document.getElementById("intro");
+const birthdayTextTop = document.getElementById("birthdayTextTop");
+const birthdayTextBottom = document.getElementById("birthdayTextBottom");
+const video = document.getElementById("videoPlayer");
+
+function showText(container, word) {
+  [...word].forEach((char, i) => {
+    const span = document.createElement("span");
+    span.textContent = char;
+    container.appendChild(span);
+    span.style.animationDelay = `${i*0.15}s`;
+  });
+}
+
+// Initial main page text
+window.addEventListener("load", () => {
+  showText(document.getElementById("happy"), happyText);
+  showText(document.getElementById("birthday"), birthdayTextIntro);
+});
+
+// Function to update positions relative to video
+function positionTextRelativeToVideo() {
+  const videoRect = video.getBoundingClientRect();
+  birthdayTextTop.style.top = (videoRect.top - 20 - birthdayTextTop.offsetHeight) + "px"; // 20px above
+  birthdayTextBottom.style.top = (videoRect.bottom + 20) + "px"; // 20px below
+}
+
+// Play button
+document.getElementById("playBtn").addEventListener("click", () => {
+  intro.style.display = "none";
+  document.getElementById("sideGif").style.display = "none";
+  document.getElementById("leftGif").style.display = "none";
+
+  video.style.display = "block";
+  video.volume = 0.1;
+  video.play();
+
+  // Top text: Happy and Birthday on separate lines
+  birthdayTextTop.innerHTML = "";
+  const topLines = ["Happy", "Birthday"];
+  topLines.forEach(lineText => {
+    const line = document.createElement("span");
+    line.className = "line";
+    [...lineText].forEach(char => {
+      const span = document.createElement("span");
+      span.textContent = char;
+      span.className = "letter";
+      span.style.animation = "popIn 4s forwards, shake 6s infinite alternate";
+      line.appendChild(span);
+    });
+    birthdayTextTop.appendChild(line);
+  });
+
+  // Bottom emojis
+  birthdayTextBottom.innerHTML = "";
+  ["🎂🎈"].forEach(lineText => {
+    [...lineText].forEach(char => {
+      const span = document.createElement("span");
+      span.textContent = char;
+      span.className = "letter emoji";
+      span.style.animation = "popIn 4s forwards, shake 6s infinite alternate";
+      birthdayTextBottom.appendChild(span);
+    });
+  });
+
+  // Set initial positions
+  positionTextRelativeToVideo();
+
+  // Update positions if window resized
+  window.addEventListener("resize", positionTextRelativeToVideo);
+});
+</script>
+
+</body>
+</html>
