@@ -12,12 +12,22 @@ body {
   margin: 0;
   width: 100vw;
   height: 100vh;
-  background: black;
   font-family: 'Montserrat Alternates', sans-serif;
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  /* Initial intro glowing gradient */
+  background: linear-gradient(270deg, #ff9aa2, #ff6b81, #ff4e63, #ff85c1, #ffb3c6);
+  background-size: 1000% 1000%;
+  animation: glowGradient 10s ease infinite;
+}
+
+@keyframes glowGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .intro {
@@ -36,12 +46,13 @@ body {
   font-weight: 900;
   margin: 0 12px;
   line-height: 1.1;
-  background: linear-gradient(90deg, #ff4ecf, #ff95c7, #6e5fff, #4ec9ff, #ff4ecf);
+  background: linear-gradient(90deg, #c8ff00, #e40000, #6e5fff, #4ec9ff, #ff4ecf);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   opacity: 0;
   display: inline-block;
   animation: popIn 4s forwards, shake 6s infinite alternate;
+  text-shadow: 0 0 12px rgba(255,255,255,0.8);
 }
 
 .play-gif-container {
@@ -60,6 +71,7 @@ body {
   color: white;
   font-size: 28px;
   cursor: pointer;
+  box-shadow: 0 0 25px #ff2e63;
 }
 
 .play-gif-container img {
@@ -71,14 +83,15 @@ video {
   width: 100vw;
   max-height: 80vh;
   display: none;
-  background: black;
+  background: white; /* Player background white */
   position: relative;
 }
 
+/* Video subtitles styling for white background */
 video::cue {
-  color: white !important;           /* White text */
-  background: rgba(0, 0, 0, 0.7) !important; /* Dark semi-transparent background */
-  font-size: 20px !important;        /* Bigger font */
+  color: #ff4e63 !important;          /* pinkish-reddish */
+  text-shadow: 0 0 8px rgba(255,78,99,0.8);
+  font-size: 22px !important;
   line-height: 1.4 !important;
   padding: 0.2em 0.4em !important;
 }
@@ -91,6 +104,8 @@ video::cue {
   pointer-events: none;
   z-index: 15;
   white-space: nowrap;
+  color: #ff4e63; /* pinkish-reddish */
+  text-shadow: 0 0 12px rgba(255,78,99,0.9);
 }
 
 .line {
@@ -98,33 +113,36 @@ video::cue {
   font-size: clamp(48px, 8vw, 64px);
   font-weight: 900;
   margin: 0;
+  color: #ff4e63;
+  text-shadow: 0 0 15px rgba(255,78,99,0.8);
 }
 
 .letter {
   display: inline-block;
   margin: 0 12px;
   opacity: 0;
-  animation: popIn 4s forwards, colorShift 6s infinite linear, shake 6s infinite alternate;
-  background: linear-gradient(90deg, #ff69b4, #ff1493, #ff85c1, #ff69b4);
+  animation: popIn 4s forwards, shake 6s infinite alternate;
+  
+  /* Gradient text */
+  background: linear-gradient(90deg, #ac1c2d, #ff7f9e, #c08da7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  
+  /* Glow for better visibility on white */
+  text-shadow: 0 0 10px rgba(255, 214, 219, 0.7), 0 0 12px rgba(214, 33, 78, 0.5);
 }
+
 
 .letter.emoji {
   background: none;
   -webkit-text-fill-color: unset;
+  text-shadow: none;
 }
 
 @keyframes popIn {
   0% { opacity: 0; transform: translateY(-40px) scale(0.5); }
   50% { opacity: 1; transform: translateY(10px) scale(1.2); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes colorShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
 }
 
 @keyframes shake {
@@ -212,15 +230,15 @@ document.getElementById("playBtn").addEventListener("click", () => {
   document.getElementById("sideGif").style.display = "none";
   document.getElementById("leftGif").style.display = "none";
 
-  // === Only changes for video screen ===
-  document.body.style.background = "white"; // white background
+  // Set player background white
+  document.body.style.background = "white";
   video.style.display = "block";
   video.volume = 0.1;
   video.play();
 
   // Top text
   birthdayTextTop.innerHTML = "";
-  const topLines = ["Happy", "Birthday"];
+  const topLines = ["HAPPY", "BIRTHDAY"];
   topLines.forEach(lineText => {
     const line = document.createElement("span");
     line.className = "line";
@@ -237,7 +255,7 @@ document.getElementById("playBtn").addEventListener("click", () => {
   // Bottom balloon GIF
   birthdayTextBottom.innerHTML = "";
   const balloonGif = document.createElement("img");
-  balloonGif.src = "balloons-and-confetti.gif"; // balloon GIF
+  balloonGif.src = "balloons-and-confetti.gif"; 
   balloonGif.alt = "Balloons";
   balloonGif.style.width = "120px";
   balloonGif.style.height = "auto";
