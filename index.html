@@ -36,7 +36,6 @@ body {
   font-weight: 900;
   margin: 0 12px;
   line-height: 1.1;
-  /* Homepage gradient changed to glowing purple-pink-blue */
   background: linear-gradient(90deg, #ff4ecf, #ff95c7, #6e5fff, #4ec9ff, #ff4ecf);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -76,7 +75,14 @@ video {
   position: relative;
 }
 
-/* Text over video */
+video::cue {
+  color: white !important;           /* White text */
+  background: rgba(0, 0, 0, 0.7) !important; /* Dark semi-transparent background */
+  font-size: 20px !important;        /* Bigger font */
+  line-height: 1.4 !important;
+  padding: 0.2em 0.4em !important;
+}
+
 #birthdayTextTop, #birthdayTextBottom {
   position: absolute;
   left: 50%;
@@ -99,7 +105,6 @@ video {
   margin: 0 12px;
   opacity: 0;
   animation: popIn 4s forwards, colorShift 6s infinite linear, shake 6s infinite alternate;
-  /* Video text gradient improved pink glow */
   background: linear-gradient(90deg, #ff69b4, #ff1493, #ff85c1, #ff69b4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -122,7 +127,6 @@ video {
   100% { background-position: 0% 50%; }
 }
 
-/* Slow shake animation for all texts */
 @keyframes shake {
   0% { transform: translate(0,0); }
   25% { transform: translate(1px,-1px); }
@@ -131,7 +135,6 @@ video {
   100% { transform: translate(0,0); }
 }
 
-/* MOBILE ADJUSTMENTS */
 @media only screen and (max-width: 600px) {
   .main-text span {
     font-size: clamp(36px, 10vw, 48px);
@@ -170,6 +173,7 @@ video {
 
 <video id="videoPlayer" playsinline controls>
   <source src="bdayy.mp4" type="video/mp4">
+  <track src="HAPPY BIRTHDAY.vtt" kind="subtitles" srclang="en" label="English" default>
 </video>
 
 <div id="birthdayTextTop"></div>
@@ -192,30 +196,29 @@ function showText(container, word) {
   });
 }
 
-// Initial main page text
 window.addEventListener("load", () => {
   showText(document.getElementById("happy"), happyText);
   showText(document.getElementById("birthday"), birthdayTextIntro);
 });
 
-// Function to update positions relative to video
 function positionTextRelativeToVideo() {
   const videoRect = video.getBoundingClientRect();
-  birthdayTextTop.style.top = (videoRect.top - 20 - birthdayTextTop.offsetHeight) + "px"; // 20px above
-  birthdayTextBottom.style.top = (videoRect.bottom + 20) + "px"; // 20px below
+  birthdayTextTop.style.top = (videoRect.top - 20 - birthdayTextTop.offsetHeight) + "px";
+  birthdayTextBottom.style.top = (videoRect.bottom + 20) + "px";
 }
 
-// Play button
 document.getElementById("playBtn").addEventListener("click", () => {
   intro.style.display = "none";
   document.getElementById("sideGif").style.display = "none";
   document.getElementById("leftGif").style.display = "none";
 
+  // === Only changes for video screen ===
+  document.body.style.background = "white"; // white background
   video.style.display = "block";
   video.volume = 0.1;
   video.play();
 
-  // Top text: Happy and Birthday on separate lines
+  // Top text
   birthdayTextTop.innerHTML = "";
   const topLines = ["Happy", "Birthday"];
   topLines.forEach(lineText => {
@@ -231,22 +234,16 @@ document.getElementById("playBtn").addEventListener("click", () => {
     birthdayTextTop.appendChild(line);
   });
 
-  // Bottom emojis
+  // Bottom balloon GIF
   birthdayTextBottom.innerHTML = "";
-  ["🎂🎈"].forEach(lineText => {
-    [...lineText].forEach(char => {
-      const span = document.createElement("span");
-      span.textContent = char;
-      span.className = "letter emoji";
-      span.style.animation = "popIn 4s forwards, shake 6s infinite alternate";
-      birthdayTextBottom.appendChild(span);
-    });
-  });
+  const balloonGif = document.createElement("img");
+  balloonGif.src = "balloons-and-confetti.gif"; // balloon GIF
+  balloonGif.alt = "Balloons";
+  balloonGif.style.width = "120px";
+  balloonGif.style.height = "auto";
+  birthdayTextBottom.appendChild(balloonGif);
 
-  // Set initial positions
   positionTextRelativeToVideo();
-
-  // Update positions if window resized
   window.addEventListener("resize", positionTextRelativeToVideo);
 });
 </script>
